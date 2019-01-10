@@ -1,8 +1,14 @@
-- numpy
-- scipy
-- pandas
-- matplotlib
-- seaborn
-- sqlalchemy
-- rise
+name: pydata-environment
+channels:
+    - damianavila82
+    - conda-forge
+dependencies:
+    - python
+    - numpy
+    - scipy
+    - pandas
+    - matplotlib
+    - seaborn
+    - sqlalchemy
+    - rise
 
