@@ -1,5 +1,5 @@
 # Pandas and plots for data analysis
-  Abhijit Dasgupta, PhD (District Data Labs)
+  Abhijit Dasgupta, PhD (ARAASTAT/District Data Labs)
 
 
 # Tools
@@ -7,6 +7,7 @@
 + Anaconda Python Distribution
     - pandas (version 0.23)
     - seaborn (version 0.9)
+    - numpy
     - scipy
     - matplotlib
 
@@ -16,10 +17,10 @@
 + Use `pandas` for data ingestion and munging (50 minutes)
     - Reading data from a variety of sources
     - Use of `Series` and `DataFrame` objects
-    - Transforming datasets between wide and long formats
+    - Data cleaning
+    - Transforming datasets
     - The "split-apply-combine" paradigm
     - Computing various data summaries
-    - Transforming data
 
 # Objectives
 + Use `matplotlib` and `seaborn` for creating plots useful for data analysis (30 minutes)
@@ -34,4 +35,531 @@
 + Introduce other `PyData` packages (10 minutes)
     - `statsmodels` for statistical modeling
     - `scikit-learn` for machine learning
-    - `scikit-image` for image analysis
+
+# Starting up
+
+# Starting up
+
++ I assume you know the basics of Python
++ For this tutorial, I'll refresh the concepts of
+    - lists `[]`
+    - dicts `{}`
+
+# Lists
+
+Lists are basically buckets where you can store things
+
+1. List members can be of any type
+1. Lists are ordered, i.e there is a first and last member
+
+```python
+L1 = ['Abhijit','Dasgupta', 47, True]
+L2 = ['Tracy','Bergemann', 43, False]
+```
+```python
+L1[0]
+```
+```python
+L2[1:3]
+```
+> The notation `a:b` means we include `a` but stop before `b`.
+> In Python we also start counting from 0
+
+You can also start counting from the right.
+```python
+L2[-2]
+```
+You can also replace elements
+```python
+L2[-2] = 49
+L2
+```
+
+
+# Dicts
+
+Dicts are _key-value pairs_:
+
+- Keys can be strings, numbers or _tuples_
+- Values can be anything
+- There is no ordering
+
+> Tuples are like lists, are denoted using `()`, and are immutable,
+> i.e., once set, they can't be changed.
+
+```python
+D1 = {'First': "Abhijit", "Last": "Dasgupta", "Age": 47, "Male": True}
+D2 = {"First": "Tracy", "Last":"Bergemann", "Age": 43, "Male":False}
+```
+```python
+D1[0]
+```
+
+# Python packages
+
+# Packages we'll use
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+> You provide shortcuts to save typing (since we're all lazy)
+
+You call functions and other elements of packages using a `.` notation
+```python
+A1 = np.array(L1)
+```
+```python
+A1
+```
+Note that the number and boolean are both converted to strings.
+Numpy arrays can only hold items of __one type__, and so conversion happens
+
+# Pandas
+![](figures/panda1.jpg)
+
+# Pandas
+Pandas builds off of numpy.
+
+1. A 1-dimensional numpy array becomes a `Series`
+1. A 2-dimensional numpy array becomes a `DataFrame`
+
+```{python, eval=True}
+pd.Series(L1)
+```
+The elements are all of the same type, but each element has a _label_,
+which `pandas` calls an `Index`.
+
+```python
+pd.Series(L1).index
+```
+
+# DataFrames
+The `DataFrame` is a bit different, and was one of the PyData game-changers
+
+A `DataFrame` is composed of several columns, each of which are `Series`,
+but __each column can be of a different type__
+
+```python
+DF = pd.DataFrame([D1,D2])
+DF
+```
+We can see the types of each column:
+```python
+DF.info()
+```
+
+You could also create a `DataFrame` from a numpy 2-d array, and a
+single `dict` where all the elements are of the same length (think we
+  want to create a rectangular data structure)
+
+```python
+raw = {'First': ['John','Paul','Ringo'],'Last' : ['Lennon','McCartney','Starr'],  'Age' : [np.nan, 69, 68]}
+D = pd.DataFrame(raw)
+D
+```
+> I put in a missing value here. I'll come back to missing values in a bit
+
+# Where does `pandas` play?
+
+![](figures/DSPipelinecopy.png)
+<p style="text-align:right;font-size:9pt;">
+Practical Data Science Cookbook by Ojeda, Murphy, Dasgupta, Bengfort
+
+# Data ingestion
+
+Pandas can read data from a wide variety of file types
+
+1. Text (csv, tsv, fixed width)
+1. Excel
+1. Statistical packages (SAS, Stata)
+1. SQL databases
+1. Parquet and Feather
+1. JSON
+
+Pandas also uses a common structure to read these: `pd.read_*`
+
+# Data ingestion
+
+```python
+d1 = pd.read_csv('data/diamonds.csv')
+d2 = pd.read_excel('data/diamonds.xlsx')
+d3 = pd.read_sas('data/diamonds.sas7bdat')
+```
+You have to do a bit more for SQL:
+```python
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///data/diamonds.sqlite')
+d4 = pd.read_sql_table('diamonds', engine.connect())
+d5 = pd.read_sql('select * from diamonds', engine.connect())
+```
+
+# Data munging
+
+# Slicing and dicing
+
+```python
+scientists = pd.read_csv('data/scientists.csv')
+scientists
+```
+
+## Extracting a single column
+
+```python
+scientists['Age'] # or scientists.Age
+```
+
+## Extracting a range of rows
+```python
+scientists[1:5]
+```
+
+## Extracting a range of columns by position
+```python
+scientists.iloc[:, 1:3]
+```
+
+## Extracting a range of columns by label
+
+```python
+scientists.loc[:, 'Born':'Age']
+```
+> When you extract by label (`.loc`), pandas grabs the last one too!! Something
+> to be careful of.
+
+```python
+scientists.loc[:3,['Name','Age']]
+```
+
+# Slicing and dicing by condition
+
+```python
+d = pd.read_csv('data/diamonds.csv')
+d.head()
+```
+```python
+d[d.carat < 0.3].head()
+```
+```python
+d[d.carat < 0.3 & d.color == 'E'].head()
+```
+```python
+d.query("(carat < 0.3) & (color == 'E')")
+```
+
+# Stacking
+
+```python
+d1 = pd.read_csv('data/concat_1.csv')
+d2 = pd.read_csv('data/concat_2.csv')
+d3 = pd.read_csv('data/concat_3.csv')
+```
+```python
+d1
+```
+```python
+d2
+```
+```python
+d3
+```
+```python
+pd.concat([d1,d2,d3])
+```
+```python
+pd.concat([d1,d2,d3], axis = 1)
+```
+
+# Merging
+```python
+survey1 = pd.read_csv('data/survey_person.csv')
+survey2 = pd.read_csv('data/survey_survey.csv')
+```
+```python
+survey1
+```
+```python
+survey2
+```
+
+# Joins
+![](figures/joins.png)
+
+# Joins
+```python
+d = pd.merge(survey1, survey2, how='right', left_on='ident', right_on='person')
+```
+
+# Data summaries
+```python
+d = pd.read_csv('data/diamonds.csv')
+d.describe(include=np.object)
+```
+```python
+d.carat.median()
+```
+```python
+d[['carat','price']].agg([np.mean,np.median, np.std])
+```
+```python
+d.color.value_counts()
+```
+# Grouped summaries (split-apply-combine)
+![](figures/SplitApplyCombine.png)
+
+# Grouped summaries
+
+Find the average price of diamonds by color.
+
+```python
+d.groupby('clarity')['price'].mean()
+```
+
+# Grouped summaries
+
+What is the average life expectancy in countries by year?
+
+```python
+gapminder = pd.read_csv('data/gapminder.tsv', sep='\t')
+gapminder.groupby(['continent','year'])['lifeExp'].mean()
+```
+
+# Tidy data
+
+The concept of tidy data is that one should have
+
+1. One row per observation
+1. One column per variable
+1. Each type of observational unit forms a table
+
+# Tidying data
+
+```python
+pew = pd.read_csv('data/pew.csv')
+pew.head()
+```
+There's data in the column headers
+
+There needs to be a column for a new variable for income.
+
+```python
+pew_long = pd.melt(pew, id_vars = 'religion')
+pew_long.head()
+```
+
+# Data cleaning
+
+# Data cleaning
+```python
+diabetes = pd.read_csv('data/diabetic_data.csv')
+diabetes.head()
+```
+```python
+diabetes.race.value_counts()
+```
+
+```python
+diabetes[diabetes=='?'] = np.nan
+```
+```python
+diabetes.race.value_counts()
+```
+
+See if there are any missing, by applying a function to each column
+```python
+diabetes.apply(lambda x: np.sum(pd.isna(x)))
+
+```
+
+# Filling in missing values
+
+```python
+d = pd.DataFrame({'x':[1, 2, np.nan, 4],'y' : [10, np.nan, 92, np.nan]})
+d
+```
+```python
+d.dropna()
+```
+```python
+d.ffill()
+```
+```python
+d.fillna(250)
+```
+
+# Data visualization
+
+# Data visualization
+
+We can start with `pandas`, which runs `matplotlib` underneath.
+
+```python
+diamonds = pd.read_csv('data/diamonds.csv')
+diamonds['price'].plot(kind='hist');
+```
+```python
+diamonds['price'].plot(kind='density')
+```
+```python
+diamonds['color'].value_counts().plot(kind='bar')
+```
+
+## Looking at 2 variables
+```python
+diamonds[['color','price']].boxplot(by='color');
+```
+```python
+diamonds.plot.scatter(x='carat',y='price')
+```
+
+# Seaborn
+
+# Seaborn
+
+The package `seaborn` provides more involved graphs, as well as nicer looking graphs
+It is built on top of `matplotlib`, so we tend to load both together.
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+tips = sns.load_dataset('tips')
+tips.head()
+```
+
+# Univariate plots
+
+```python
+sns.set_style('white')
+sns.distplot(tips.total_bill);
+```
+
+```python
+sns.countplot(x = 'color', data=diamonds);
+```
+# Bivariate plots
+
+You can start with a plain scatterplot
+
+```python
+sns.relplot(x = 'total_bill', y = 'tip', data=tips);
+```
+
+# Bivariate plots
+
+Use color to condition on one variable
+```python
+sns.relplot(x = 'total_bill', y = 'tip', hue='smoker', data=tips);
+```
+
+# Bivariate plots
+
+Use symbols to condition on another variable
+
+```python
+sns.relplot(x = 'total_bill', y = 'tip', hue='smoker',style='time', data=tips);
+```
+
+# Bivariate plots
+
+Split the data up and plot them using facets
+
+```python
+sns.relplot(x = 'total_bill', y = 'tip', data=tips, col='time');
+```
+
+# Bivariate plots
+
+Look at the univariate and bivariate properties together
+```python
+iris = sns.load_dataset('iris')
+sns.jointplot(x = 'petal_length',y='petal_width', data=iris);
+```
+
+# Conditioning on categorical variables
+
+## Boxplots
+```python
+sns.catplot(x='color',y='price', kind='box',data=diamonds)
+```
+## Violin Plots
+These are reflected density plots, which shows more
+of the richness of the data
+```python
+sns.catplot(x='color',y='price', kind='violin',data=diamonds);
+```
+
+## Swarm plots
+```python
+iris = sns.load_dataset('iris')
+sns.catplot(x='species',y='petal_length', kind='swarm',data=iris);
+```
+
+## Comparative violin plots
+
+```python
+sns.catplot(x="day", y="total_bill", hue="sex", kind="violin", split=True, data=tips);
+```
+
+```python
+gapminder=pd.read_csv('data/gapminder.tsv', sep='\t')
+sns.set_style('whitegrid')
+sns.relplot(x='year',y='lifeExp', data=gapminder)
+plt.set_xlabels('Year')
+```
+```python
+ax = sns.relplot(x='year',y='lifeExp', data=gapminder, hue='country',
+  kind='line', row='continent', legend=False)
+ax.set(ylabel = 'Life Expectancy')
+plt.show()
+
+```
+
+## Exploring all the variables
+
+```python
+sns.pairplot(iris);
+```
+# Adding lines
+
+## A straight line
+```python
+sns.lmplot(x = 'total_bill', y = 'tip', data=tips);
+```
+
+## A smoother
+```python
+sns.regplot(x = 'total_bill', y = 'tip', data = tips,
+  lowess=True);
+
+```
+
+# Modeling
+
+## Statsmodels
+
+The `statsmodels` package is well-integrated with `pandas`,
+and it can use formula-based model specifications like R.
+
+```python
+import statsmodels.formula.api as smf
+
+model=smf.ols('tip ~ total_bill', data = tips)
+model.fit().summary()
+```
+
+# Resources
+
+## Books
+
+Three books are specially useful here:
+
+1. Python for Data Analysis (2nd edition) by Wes McKinney
+1. Python Data Science Handbook by Jake Vanderplas
+1. Pandas for Everyone by Daniel Chen
+
+## Tutorials
+
+1. Daniel Chen's SciPy 2017 tutorial ([YouTube](https://www.youtube.com/watch?v=oGzU688xCUs)) ([GitHub](https://github.com/chendaniely/scipy-2017-tutorial-pandas))
+1. Datacamp ([link](https://www.datacamp.com/community/tutorials/pandas-tutorial-dataframe-python))
+1. [10 minutes to Pandas](https://pandas.pydata.org/pandas-docs/stable/10min.html)

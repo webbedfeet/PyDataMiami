@@ -665,16 +665,15 @@ img {max-width : 100%}
     <div class ="container">
         <div class = "row">
             <div class = "col-md-12 twelve columns">
-<H1 class="title">
-Pandas and plots for data analysis
-</H1>
-<p><strong>Author:</strong> Abhijit Dasgupta, PhD (District Data Labs) <BR/></p>
+<h1 id="pandas-and-plots-for-data-analysis">Pandas and plots for data analysis</h1>
+<p>Abhijit Dasgupta, PhD (ARAASTAT/District Data Labs)</p>
 <h1 id="tools">Tools</h1>
 <ul>
 <li>Anaconda Python Distribution
 <ul>
 <li>pandas (version 0.23)</li>
 <li>seaborn (version 0.9)</li>
+<li>numpy</li>
 <li>scipy</li>
 <li>matplotlib</li>
 </ul></li>
@@ -685,10 +684,10 @@ Pandas and plots for data analysis
 <ul>
 <li>Reading data from a variety of sources</li>
 <li>Use of <code>Series</code> and <code>DataFrame</code> objects</li>
-<li>Transforming datasets between wide and long formats</li>
-<li>The &quot;split-apply-combine&quot; paradigm</li>
+<li>Data cleaning</li>
+<li>Transforming datasets</li>
+<li>The “split-apply-combine” paradigm</li>
 <li>Computing various data summaries</li>
-<li>Transforming data</li>
 </ul></li>
 </ul>
 <h1 id="objectives-1">Objectives</h1>
@@ -709,15 +708,578 @@ Pandas and plots for data analysis
 <ul>
 <li><code>statsmodels</code> for statistical modeling</li>
 <li><code>scikit-learn</code> for machine learning</li>
-<li><code>scikit-image</code> for image analysis</li>
 </ul></li>
 </ul>
+<h1 id="starting-up">Starting up</h1>
+<h1 id="starting-up-1">Starting up</h1>
+<ul>
+<li>I assume you know the basics of Python</li>
+<li>For this tutorial, I’ll refresh the concepts of
+<ul>
+<li>lists <code>[]</code></li>
+<li>dicts <code>{}</code></li>
+</ul></li>
+</ul>
+<h1 id="lists">Lists</h1>
+<p>Lists are basically buckets where you can store things</p>
+<ol type="1">
+<li>List members can be of any type</li>
+<li>Lists are ordered, i.e there is a first and last member</li>
+</ol>
+
+
+<div class="highlight"><pre><span></span><span class="n">L1</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Abhijit&#39;</span><span class="p">,</span><span class="s1">&#39;Dasgupta&#39;</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="bp">True</span><span class="p">]</span>
+<span class="n">L2</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tracy&#39;</span><span class="p">,</span><span class="s1">&#39;Bergemann&#39;</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">L1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre>
+&#39;Abhijit&#39;
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">L2</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre>
+[&#39;Bergemann&#39;, 43]
+</pre></div>
+
+<blockquote>
+<p>The notation <code>a:b</code> means we include <code>a</code> but stop before <code>b</code>. In Python we also start counting from 0</p>
+</blockquote>
+<p>You can also start counting from the right.</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">L2</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre>
+43
+</pre></div>
+
+<p>You can also replace elements</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">L2</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">49</span>
+<span class="n">L2</span>
+</pre></div>
+
+<div class="highlight"><pre>
+[&#39;Tracy&#39;, &#39;Bergemann&#39;, 49, False]
+</pre></div>
+
+<h1 id="dicts">Dicts</h1>
+<p>Dicts are <em>key-value pairs</em>:</p>
+<ul>
+<li>Keys can be strings, numbers or <em>tuples</em></li>
+<li>Values can be anything</li>
+<li>There is no ordering</li>
+</ul>
+<blockquote>
+<p>Tuples are like lists, are denoted using <code>()</code>, and are immutable, i.e., once set, they can’t be changed.</p>
+</blockquote>
+
+
+<div class="highlight"><pre><span></span><span class="n">D1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;First&#39;</span><span class="p">:</span> <span class="s2">&quot;Abhijit&quot;</span><span class="p">,</span> <span class="s2">&quot;Last&quot;</span><span class="p">:</span> <span class="s2">&quot;Dasgupta&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span> <span class="s2">&quot;Male&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+<span class="n">D2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;First&quot;</span><span class="p">:</span> <span class="s2">&quot;Tracy&quot;</span><span class="p">,</span> <span class="s2">&quot;Last&quot;</span><span class="p">:</span><span class="s2">&quot;Bergemann&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span> <span class="s2">&quot;Male&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">}</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">D1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre>
+<span class="ansi-red-
+fg">---------------------------------------------------------------------------</span><span
+class="ansi-red-fg">KeyError</span>
+Traceback (most recent call last)<span class="ansi-green-
+fg">&lt;ipython-input-1-19ecf3d27f4f&gt;</span> in <span class="ansi-
+cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-
+fg"> </span>D1<span class="ansi-blue-fg">[</span><span class="ansi-
+cyan-fg">0</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-red-fg">KeyError</span>: 0
+</pre></div>
+
+<h1 id="python-packages">Python packages</h1>
+<h1 id="packages-well-use">Packages we’ll use</h1>
+
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+</pre></div>
+
+<blockquote>
+<p>You provide shortcuts to save typing (since we’re all lazy)</p>
+</blockquote>
+<p>You call functions and other elements of packages using a <code>.</code> notation</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">A1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">L1</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">A1</span>
+</pre></div>
+
+<p>Note that the number and boolean are both converted to strings. Numpy arrays can only hold items of <strong>one type</strong>, and so conversion happens</p>
+<h1 id="pandas">Pandas</h1>
+<p><img src="figures/panda1.jpg" /></p>
+<h1 id="pandas-1">Pandas</h1>
+<p>Pandas builds off of numpy.</p>
+<ol type="1">
+<li>A 1-dimensional numpy array becomes a <code>Series</code></li>
+<li>A 2-dimensional numpy array becomes a <code>DataFrame</code></li>
+</ol>
+
+
+<div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">L1</span><span class="p">)</span>
+</pre></div>
+
+<p>The elements are all of the same type, but each element has a <em>label</em>, which <code>pandas</code> calls an <code>Index</code>.</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">L1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+</pre></div>
+
+<h1 id="dataframes">DataFrames</h1>
+<p>The <code>DataFrame</code> is a bit different, and was one of the PyData game-changers</p>
+<p>A <code>DataFrame</code> is composed of several columns, each of which are <code>Series</code>, but <strong>each column can be of a different type</strong></p>
+
+
+<div class="highlight"><pre><span></span><span class="n">DF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">D1</span><span class="p">,</span><span class="n">D2</span><span class="p">])</span>
+<span class="n">DF</span>
+</pre></div>
+
+<p>We can see the types of each column:</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">DF</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+
+<p>You could also create a <code>DataFrame</code> from a numpy 2-d array, and a single <code>dict</code> where all the elements are of the same length (think we want to create a rectangular data structure)</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">raw</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;First&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;John&#39;</span><span class="p">,</span><span class="s1">&#39;Paul&#39;</span><span class="p">,</span><span class="s1">&#39;Ringo&#39;</span><span class="p">],</span><span class="s1">&#39;Last&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Lennon&#39;</span><span class="p">,</span><span class="s1">&#39;McCartney&#39;</span><span class="p">,</span><span class="s1">&#39;Starr&#39;</span><span class="p">],</span>  <span class="s1">&#39;Age&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">68</span><span class="p">]}</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+<span class="n">D</span>
+</pre></div>
+
+<blockquote>
+<p>I put in a missing value here. I’ll come back to missing values in a bit</p>
+</blockquote>
+<h1 id="where-does-pandas-play">Where does <code>pandas</code> play?</h1>
+<img src="figures/DSPipelinecopy.png" />
+<p style="text-align:right;font-size:9pt;">
+<p>Practical Data Science Cookbook by Ojeda, Murphy, Dasgupta, Bengfort</p>
+<h1 id="data-ingestion">Data ingestion</h1>
+<p>Pandas can read data from a wide variety of file types</p>
+<ol type="1">
+<li>Text (csv, tsv, fixed width)</li>
+<li>Excel</li>
+<li>Statistical packages (SAS, Stata)</li>
+<li>SQL databases</li>
+<li>Parquet and Feather</li>
+<li>JSON</li>
+</ol>
+<p>Pandas also uses a common structure to read these: <code>pd.read_*</code></p>
+<h1 id="data-ingestion-1">Data ingestion</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/diamonds.csv&#39;</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data/diamonds.xlsx&#39;</span><span class="p">)</span>
+<span class="n">d3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sas</span><span class="p">(</span><span class="s1">&#39;data/diamonds.sas7bdat&#39;</span><span class="p">)</span>
+</pre></div>
+
+<p>You have to do a bit more for SQL:</p>
+
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">&#39;sqlite:///data/diamonds.sqlite&#39;</span><span class="p">)</span>
+<span class="n">d4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_table</span><span class="p">(</span><span class="s1">&#39;diamonds&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">())</span>
+<span class="n">d5</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s1">&#39;select * from diamonds&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">())</span>
+</pre></div>
+
+<h1 id="data-munging">Data munging</h1>
+<h1 id="slicing-and-dicing">Slicing and dicing</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">scientists</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/scientists.csv&#39;</span><span class="p">)</span>
+<span class="n">scientists</span>
+</pre></div>
+
+<h2 id="extracting-a-single-column">Extracting a single column</h2>
+
+
+<div class="highlight"><pre><span></span><span class="n">scientists</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="c1"># or scientists.Age</span>
+</pre></div>
+
+<h2 id="extracting-a-range-of-rows">Extracting a range of rows</h2>
+
+
+<div class="highlight"><pre><span></span><span class="n">scientists</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+<h2 id="extracting-a-range-of-columns-by-position">Extracting a range of columns by position</h2>
+
+
+<div class="highlight"><pre><span></span><span class="n">scientists</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+<h2 id="extracting-a-range-of-columns-by-label">Extracting a range of columns by label</h2>
+
+
+<div class="highlight"><pre><span></span><span class="n">scientists</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Born&#39;</span><span class="p">:</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span>
+</pre></div>
+
+<blockquote>
+<p>When you extract by label (<code>.loc</code>), pandas grabs the last one too!! Something to be careful of.</p>
+</blockquote>
+
+
+<div class="highlight"><pre><span></span><span class="n">scientists</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">3</span><span class="p">,[</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span><span class="s1">&#39;Age&#39;</span><span class="p">]]</span>
+</pre></div>
+
+<h1 id="slicing-and-dicing-by-condition">Slicing and dicing by condition</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/diamonds.csv&#39;</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">carat</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">carat</span> <span class="o">&lt;</span> <span class="mf">0.3</span> <span class="o">&amp;</span> <span class="n">d</span><span class="o">.</span><span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;(carat &lt; 0.3) &amp; (color == &#39;E&#39;)&quot;</span><span class="p">)</span>
+</pre></div>
+
+<h1 id="stacking">Stacking</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/concat_1.csv&#39;</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/concat_2.csv&#39;</span><span class="p">)</span>
+<span class="n">d3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/concat_3.csv&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d1</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d2</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d3</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">d1</span><span class="p">,</span><span class="n">d2</span><span class="p">,</span><span class="n">d3</span><span class="p">])</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">d1</span><span class="p">,</span><span class="n">d2</span><span class="p">,</span><span class="n">d3</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+<h1 id="merging">Merging</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">survey1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/survey_person.csv&#39;</span><span class="p">)</span>
+<span class="n">survey2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/survey_survey.csv&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">survey1</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">survey2</span>
+</pre></div>
+
+<h1 id="joins">Joins</h1>
+<p><img src="figures/joins.png" /></p>
+<h1 id="joins-1">Joins</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">survey1</span><span class="p">,</span> <span class="n">survey2</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;ident&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;person&#39;</span><span class="p">)</span>
+</pre></div>
+
+<h1 id="data-summaries">Data summaries</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/diamonds.csv&#39;</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">carat</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="p">[[</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span><span class="s1">&#39;price&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">])</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+
+<h1 id="grouped-summaries-split-apply-combine">Grouped summaries (split-apply-combine)</h1>
+<p><img src="figures/SplitApplyCombine.png" /></p>
+<h1 id="grouped-summaries">Grouped summaries</h1>
+<p>Find the average price of diamonds by color.</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;clarity&#39;</span><span class="p">)[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+<h1 id="grouped-summaries">Grouped summaries</h1>
+<p>What is the average life expectancy in countries by year?</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">gapminder</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/gapminder.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;continent&#39;</span><span class="p">,</span><span class="s1">&#39;year&#39;</span><span class="p">])[</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+<h1 id="tidy-data">Tidy data</h1>
+<p>The concept of tidy data is that one should have</p>
+<ol type="1">
+<li>One row per observation</li>
+<li>One column per variable</li>
+<li>Each type of observational unit forms a table</li>
+</ol>
+<h1 id="tidying-data">Tidying data</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">pew</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/pew.csv&#39;</span><span class="p">)</span>
+<span class="n">pew</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+<p>There’s data in the column headers</p>
+<p>There needs to be a column for a new variable for income.</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">pew_long</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">pew</span><span class="p">,</span> <span class="n">id_vars</span> <span class="o">=</span> <span class="s1">&#39;religion&#39;</span><span class="p">)</span>
+<span class="n">pew_long</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+<h1 id="data-cleaning">Data cleaning</h1>
+<h1 id="data-cleaning-1">Data cleaning</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">diabetes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/diabetic_data.csv&#39;</span><span class="p">)</span>
+<span class="n">diabetes</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">diabetes</span><span class="o">.</span><span class="n">race</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">diabetes</span><span class="p">[</span><span class="n">diabetes</span><span class="o">==</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">diabetes</span><span class="o">.</span><span class="n">race</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+
+<p>See if there are any missing, by applying a function to each column</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">diabetes</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+</pre></div>
+
+<h1 id="filling-in-missing-values">Filling in missing values</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span><span class="s1">&#39;y&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]})</span>
+<span class="n">d</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">250</span><span class="p">)</span>
+</pre></div>
+
+<h1 id="data-visualization">Data visualization</h1>
+<h1 id="data-visualization-1">Data visualization</h1>
+<p>We can start with <code>pandas</code>, which runs <code>matplotlib</code> underneath.</p>
+
+
+<div class="highlight"><pre><span></span><span class="n">diamonds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/diamonds.csv&#39;</span><span class="p">)</span>
+<span class="n">diamonds</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">);</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">diamonds</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;density&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">diamonds</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+</pre></div>
+
+<h2 id="looking-at-2-variables">Looking at 2 variables</h2>
+
+
+<div class="highlight"><pre><span></span><span class="n">diamonds</span><span class="p">[[</span><span class="s1">&#39;color&#39;</span><span class="p">,</span><span class="s1">&#39;price&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">diamonds</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">)</span>
+</pre></div>
+
+<h1 id="seaborn">Seaborn</h1>
+<h1 id="seaborn-1">Seaborn</h1>
+<p>The package <code>seaborn</code> provides more involved graphs, as well as nicer looking graphs It is built on top of <code>matplotlib</code>, so we tend to load both together.</p>
+
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="n">tips</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;tips&#39;</span><span class="p">)</span>
+<span class="n">tips</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+<h1 id="univariate-plots">Univariate plots</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">tips</span><span class="o">.</span><span class="n">total_bill</span><span class="p">);</span>
+</pre></div>
+
+<h1 id="bivariate-plots">Bivariate plots</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;total_bill&#39;</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;tip&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tips</span><span class="p">);</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;total_bill&#39;</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;tip&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;smoker&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tips</span><span class="p">);</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;total_bill&#39;</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;tip&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;smoker&#39;</span><span class="p">,</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tips</span><span class="p">);</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;total_bill&#39;</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;tip&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tips</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">);</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">iris</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;iris&#39;</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;petal_length&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;petal_width&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">iris</span><span class="p">);</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">catplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;box&#39;</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">diamonds</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">catplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;violin&#39;</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">diamonds</span><span class="p">)</span>
+</pre></div>
+
+<h1 id="facets">Facets</h1>
+
+
+<div class="highlight"><pre><span></span><span class="n">gapminder</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/gapminder.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;whitegrid&#39;</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">gapminder</span><span class="p">)</span>
+</pre></div>
+
+
+
+
+<div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">gapminder</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;country&#39;</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;continent&#39;</span><span class="p">)</span>
+</pre></div>
+
+
 
     <HR/>
     <div class="footer">
       <p>Published from <a href="tutorial.pmd">tutorial.pmd</a>
     using <a href="http://mpastell.com/pweave">Pweave</a> 0.30.3
-    on 09-01-2019.<p></div>
+    on 10-01-2019.<p></div>
 
             </div>
         </div>
