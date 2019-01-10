@@ -1,0 +1,37 @@
+# Pandas and plots for data analysis
+  Abhijit Dasgupta, PhD (District Data Labs)
+
+
+# Tools
+
++ Anaconda Python Distribution
+    - pandas (version 0.23)
+    - seaborn (version 0.9)
+    - scipy
+    - matplotlib
+
+
+# Objectives
+
++ Use `pandas` for data ingestion and munging (50 minutes)
+    - Reading data from a variety of sources
+    - Use of `Series` and `DataFrame` objects
+    - Transforming datasets between wide and long formats
+    - The "split-apply-combine" paradigm
+    - Computing various data summaries
+    - Transforming data
+
+# Objectives
++ Use `matplotlib` and `seaborn` for creating plots useful for data analysis (30 minutes)
+    - Histograms and density plots
+    - Bar graphs
+    - Box and violin plots
+    - Scatter plots with smoothers
+    - Trellis graphics/small multiples
+    - Grouped data
+
+# Objectives
++ Introduce other `PyData` packages (10 minutes)
+    - `statsmodels` for statistical modeling
+    - `scikit-learn` for machine learning
+    - `scikit-image` for image analysis
